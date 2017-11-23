@@ -11,9 +11,10 @@
 //! A small utility to concatenate the output of an RNG to stdout.
 
 extern crate rand;
+extern crate small_rngs;
 
-use rand::{Rng, NewSeeded, OsRng};
-use rand::prng::{XorShiftRng, IsaacRng, Isaac64Rng, ChaChaRng};
+use rand::{Rng, NewSeeded};
+use small_rngs::*;
 use std::collections::HashMap;
 use std::env;
 use std::io::{self, Write, Error};
@@ -24,7 +25,7 @@ fn print_usage(cmd: &String, names: Vec<String>) {
 where RNG is one of: {:?}
 
 This is a small tool to endlessly contatenate output from an RNG. It can for
-example be used with PractRand: ./cat_rng chacha | ./RNG_test stdin",
+example be used with PractRand: ./cat_rng jsf32 | RNG_test stdin -multithreaded",
         cmd, names);
 }
 
@@ -33,12 +34,21 @@ type BR = Box<Rng>;
 fn main() {
     let mut ctors: HashMap<&'static str,
             Box<Fn() -> Result<BR, ::rand::Error>>> = HashMap::new();
-    ctors.insert("os", Box::new(|| OsRng::new().map(|rng| Box::new(rng) as BR)));
-
-    ctors.insert("xorshift", Box::new(|| XorShiftRng::new().map(|rng| Box::new(rng) as BR)));
-    ctors.insert("isaac", Box::new(|| IsaacRng::new().map(|rng| Box::new(rng) as BR)));
-    ctors.insert("isaac64", Box::new(|| Isaac64Rng::new().map(|rng| Box::new(rng) as BR)));
-    ctors.insert("chacha", Box::new(|| ChaChaRng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("jsf32", Box::new(|| Jsf32Rng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("jsf64", Box::new(|| Jsf64Rng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("gj", Box::new(|| GjRng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("velox", Box::new(|| Velox3bRng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("pcg_xsh_64_lcg", Box::new(|| PcgXsh64LcgRng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("pcg_xsl_128_lcg", Box::new(|| PcgXsl128LcgRng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("sapparoth_32", Box::new(|| Sapparot32Rng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("sapparoth_64", Box::new(|| Sapparot64Rng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("xorshift_128_32", Box::new(|| Xorshift128_32Rng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("xorshift_128_64", Box::new(|| Xorshift128_64Rng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("xorshift_128_plus", Box::new(|| Xorshift128PlusRng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("xorshift_mult_wt_32", Box::new(|| XorshiftMultWT32Rng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("xorshift_mult_wt_64", Box::new(|| XorshiftMultWT64Rng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("xoroshiro_128_plus", Box::new(|| Xoroshiro128PlusRng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("xoroshiro_64_plus", Box::new(|| Xoroshiro64PlusRng::new().map(|rng| Box::new(rng) as BR)));
 
     let args: Vec<String> = env::args().collect();
     if args.len() != 2 {
