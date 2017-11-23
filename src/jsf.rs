@@ -19,8 +19,8 @@ use rand_core::{Rng, SeedFromRng, Error, impls};
 /// - Period: 2<sup>64</sup>
 /// - State: 128 bits
 /// - Word size: 32 bits
-//  - Seed size: 32 bits (very small!)
-/// - Passes BigCrush and PractRand (?)
+/// - Seed size: 32 bits (very small!)
+/// - Passes BigCrush and PractRand
 #[derive(Clone)]
 pub struct Jsf32Rng {
     a: u32,
@@ -37,7 +37,7 @@ impl SeedFromRng for Jsf32Rng {
                                   c: seed,
                                   d: seed};
         for _ in 0..20 {
-            state.next_u64();
+            state.next_u32();
         }
         Ok(state)
     }
@@ -84,8 +84,8 @@ impl Rng for Jsf32Rng {
 /// - Period: 2<sup>64</sup>
 /// - State: 256 bits
 /// - Word size: 64 bits
-//  - Seed size: 64 bits (very small!)
-/// - Passes BigCrush and PractRand (?)
+/// - Seed size: 64 bits (very small!)
+/// - Passes BigCrush and PractRand
 #[derive(Clone)]
 pub struct Jsf64Rng {
     a: u64,
