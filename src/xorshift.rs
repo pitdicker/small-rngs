@@ -56,6 +56,17 @@ impl SeedFromRng for Xorshift128_32Rng {
 impl Rng for Xorshift128_32Rng {
     #[inline]
     fn next_u32(&mut self) -> u32 {
+/*
+        // optimized version
+        let x = self.x;
+        // already do the first xorshift step of the next round
+        self.x = self.y ^ (self.y << 11);
+        self.y = self.z;
+        self.z = self.z;
+        let t = self.w;
+        self.w = (x ^ (x >> 19)) ^ t ^ (t >> 8);
+        self.w
+*/
         let x = self.x;
         let t = x ^ (x << 11);
         self.x = self.y;
