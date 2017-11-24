@@ -45,6 +45,8 @@ gen_uint!(gen_u32_xorshift_mult_wt_32, u32, XorshiftMultWT32Rng);
 gen_uint!(gen_u32_xorshift_mult_wt_64, u32, XorshiftMultWT64Rng);
 gen_uint!(gen_u32_xoroshiro_128_plus, u32, Xoroshiro128PlusRng);
 gen_uint!(gen_u32_xoroshiro_64_plus, u32, Xoroshiro64PlusRng);
+gen_uint!(gen_u32_xsm32, u32, Xsm32Rng);
+gen_uint!(gen_u32_xsm64, u32, Xsm64Rng);
 
 gen_uint!(gen_u64_jsf32, u64, Jsf32Rng);
 gen_uint!(gen_u64_jsf64, u64, Jsf64Rng);
@@ -64,3 +66,5 @@ gen_uint!(gen_u64_xorshift_mult_wt_32, u64, XorshiftMultWT32Rng);
 gen_uint!(gen_u64_xorshift_mult_wt_64, u64, XorshiftMultWT64Rng);
 gen_uint!(gen_u64_xoroshiro_128_plus, u64, Xoroshiro128PlusRng);
 gen_uint!(gen_u64_xoroshiro_64_plus, u64, Xoroshiro64PlusRng);
+gen_uint!(gen_u64_xsm32, u64, Xsm32Rng);
+gen_uint!(gen_u64_xsm64, u64, Xsm64Rng);

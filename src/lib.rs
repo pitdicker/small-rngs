@@ -13,6 +13,7 @@ mod xorshift;
 mod xorshift_plus;
 mod xorshift_mult;
 mod xoroshiro;
+mod xsm;
 
 pub use self::jsf::{Jsf32Rng, Jsf64Rng};
 pub use self::gj::GjRng;
@@ -24,3 +25,4 @@ pub use self::xorshift::{Xorshift128_32Rng, Xorshift128_64Rng};
 pub use self::xorshift_plus::Xorshift128PlusRng;
 pub use self::xorshift_mult::{XorshiftMultWT32Rng, XorshiftMultWT64Rng};
 pub use self::xoroshiro::{Xoroshiro128PlusRng, Xoroshiro64PlusRng};
+pub use self::xsm::{Xsm32Rng, Xsm64Rng};

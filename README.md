@@ -8,6 +8,8 @@ to comparing them.
 
 This requires rustc nightly to build, because some RNGs need support for `u128`.
 
+Note: not all implementations of RNGs are verified to be correct yet.
+
 ## Currently implemented RNGs
 Various lesser-known PRNGs:
 - `GjRng`: A small random number generator by Geronimo Jones.
@@ -57,6 +59,8 @@ test gen_u32_xorshift_128_64     ... bench:         977 ns/iter (+/- 3) = 4094 M
 test gen_u32_xorshift_128_plus   ... bench:       1,186 ns/iter (+/- 3) = 3372 MB/s
 test gen_u32_xorshift_mult_wt_32 ... bench:       1,127 ns/iter (+/- 18) = 3549 MB/s
 test gen_u32_xorshift_mult_wt_64 ... bench:       1,278 ns/iter (+/- 2) = 3129 MB/s
+test gen_u32_xsm32               ... bench:       2,511 ns/iter (+/- 8) = 1592 MB/s
+test gen_u32_xsm64               ... bench:       2,423 ns/iter (+/- 8) = 1650 MB/s
 test gen_u64_gj                  ... bench:       3,333 ns/iter (+/- 3) = 2400 MB/s
 test gen_u64_jsf32               ... bench:       3,078 ns/iter (+/- 3) = 2599 MB/s
 test gen_u64_jsf64               ... bench:       2,311 ns/iter (+/- 5) = 3461 MB/s
@@ -75,6 +79,8 @@ test gen_u64_xorshift_128_64     ... bench:         979 ns/iter (+/- 3) = 8171 M
 test gen_u64_xorshift_128_plus   ... bench:       1,186 ns/iter (+/- 3) = 6745 MB/s
 test gen_u64_xorshift_mult_wt_32 ... bench:       3,416 ns/iter (+/- 12) = 2341 MB/s
 test gen_u64_xorshift_mult_wt_64 ... bench:       1,313 ns/iter (+/- 3) = 6092 MB/s
+test gen_u64_xsm32               ... bench:       3,901 ns/iter (+/- 17) = 2050 MB/s
+test gen_u64_xsm64               ... bench:       2,423 ns/iter (+/- 8) = 3301 MB/s
 ```
 
 Result of `cargo bench --target i686-unknown-linux-musl`:
@@ -97,6 +103,8 @@ test gen_u32_xorshift_128_64     ... bench:       2,567 ns/iter (+/- 59) = 1558 
 test gen_u32_xorshift_128_plus   ... bench:       2,444 ns/iter (+/- 17) = 1636 MB/s
 test gen_u32_xorshift_mult_wt_32 ... bench:       1,715 ns/iter (+/- 29) = 2332 MB/s
 test gen_u32_xorshift_mult_wt_64 ... bench:       3,497 ns/iter (+/- 51) = 1143 MB/s
+test gen_u32_xsm32               ... bench:       3,189 ns/iter (+/- 157) = 1254 MB/s
+test gen_u32_xsm64               ... bench:       6,007 ns/iter (+/- 283) = 665 MB/s
 test gen_u64_gj                  ... bench:       8,812 ns/iter (+/- 125) = 907 MB/s
 test gen_u64_jsf32               ... bench:       3,838 ns/iter (+/- 63) = 2084 MB/s
 test gen_u64_jsf64               ... bench:       7,661 ns/iter (+/- 73) = 1044 MB/s
@@ -115,4 +123,6 @@ test gen_u64_xorshift_128_64     ... bench:       2,638 ns/iter (+/- 91) = 3032 
 test gen_u64_xorshift_128_plus   ... bench:       3,014 ns/iter (+/- 5) = 2654 MB/s
 test gen_u64_xorshift_mult_wt_32 ... bench:       3,982 ns/iter (+/- 52) = 2009 MB/s
 test gen_u64_xorshift_mult_wt_64 ... bench:      11,666 ns/iter (+/- 111) = 685 MB/s
+test gen_u64_xsm32               ... bench:       4,346 ns/iter (+/- 190) = 1840 MB/s
+test gen_u64_xsm64               ... bench:       6,282 ns/iter (+/- 311) = 1273 MB/s
 ```

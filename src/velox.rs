@@ -52,6 +52,8 @@ impl Velox3bRng {
         for i in 0..4 {
             self.v[i] += self.ctr[i];
         }
+
+        // increase counter by 1
         for i in 0..4 {
             if { self.ctr[i] = self.ctr[i].wrapping_add(1); self.ctr[i] != 0 } {
                 break
