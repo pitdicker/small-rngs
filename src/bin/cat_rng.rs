@@ -39,9 +39,12 @@ fn main() {
     ctors.insert("gj", Box::new(|| GjRng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("velox", Box::new(|| Velox3bRng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("pcg_xsh_64_lcg", Box::new(|| PcgXsh64LcgRng::new().map(|rng| Box::new(rng) as BR)));
-    ctors.insert("pcg_xsl_128_lcg", Box::new(|| PcgXsl128LcgRng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("pcg_xsl_64_lcg", Box::new(|| PcgXsl64LcgRng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("pcg_xsl_128_mcg", Box::new(|| PcgXsl128McgRng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("sapparoth_32", Box::new(|| Sapparot32Rng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("sapparoth_64", Box::new(|| Sapparot64Rng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("sfc_32", Box::new(|| Sfc32Rng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("sfc_64", Box::new(|| Sfc64Rng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("xorshift_128_32", Box::new(|| Xorshift128_32Rng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("xorshift_128_64", Box::new(|| Xorshift128_64Rng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("xorshift_128_plus", Box::new(|| Xorshift128PlusRng::new().map(|rng| Box::new(rng) as BR)));
