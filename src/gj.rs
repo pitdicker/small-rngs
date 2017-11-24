@@ -32,10 +32,14 @@ pub struct GjRng {
 
 impl SeedFromRng for GjRng {
     fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
-        Ok(GjRng{ a: other.next_u64(),
-                      b: other.next_u64(),
-                      c: other.next_u64(),
-                      d: other.next_u64()})
+        let mut state = GjRng { a: other.next_u64(),
+                                b: other.next_u64(),
+                                c: 5000001,
+                                d: 0};
+        for _ in 0..14 {
+            state.next_u64();
+        }
+        Ok(state)
     }
 }
 
@@ -47,34 +51,22 @@ impl Rng for GjRng {
 
     #[inline]
     fn next_u64(&mut self) -> u64 {
-        let mut a = self.a;
-        let mut b = self.b;
-        let mut c = self.c;
-        let mut d = self.d;
+        self.b = self.b.wrapping_add(self.c);
+        self.a = self.a.rotate_left(32);
+        self.c ^= self.b;
 
-        // Crank
-        b = b.wrapping_add(c);
-        a = a.rotate_left(32);
-        c ^= b;
+        self.d = self.d.wrapping_add(0x55aa96a5);
 
-        d = d.wrapping_add(0x55aa96a5);
+        self.a = self.a.wrapping_add(self.b);
+        self.c = self.c.rotate_left(23);
+        self.b ^= self.a;
 
-        a = a.wrapping_add(b);
-        c = c.rotate_left(23);
-        b ^= a;
+        self.a = self.a.wrapping_add(self.c);
+        self.b = self.b.rotate_left(19);
+        self.c = self.c.wrapping_add(self.a);
+        self.b += self.d;
 
-        a = a.wrapping_add(c);
-        b = b.rotate_left(19);
-        c += a;
-
-        b += d;
-
-        self.a = a;
-        self.b = b;
-        self.c = c;
-        self.d = d;
-
-        a
+        self.a
     }
 
     #[cfg(feature = "i128_support")]
