@@ -27,10 +27,10 @@ macro_rules! gen_uint {
     }
 }
 
+gen_uint!(gen_u32_gj, u32, GjRng);
 gen_uint!(gen_u32_jsf32, u32, Jsf32Rng);
 gen_uint!(gen_u32_jsf64, u32, Jsf64Rng);
-gen_uint!(gen_u32_gj, u32, GjRng);
-gen_uint!(gen_u32_velox, u32, Velox3bRng);
+gen_uint!(gen_u32_msws, u32, MswsRng);
 gen_uint!(gen_u32_pcg_xsh_64_lcg, u32, PcgXsh64LcgRng);
 gen_uint!(gen_u32_pcg_xsl_64_lcg, u32, PcgXsl64LcgRng);
 gen_uint!(gen_u32_pcg_xsl_128_mcg, u32, PcgXsl128McgRng);
@@ -38,6 +38,7 @@ gen_uint!(gen_u32_sapparoth_32, u32, Sapparot32Rng);
 gen_uint!(gen_u32_sapparoth_64, u32, Sapparot64Rng);
 gen_uint!(gen_u32_sfc_32, u32, Sfc32Rng);
 gen_uint!(gen_u32_sfc_64, u32, Sfc64Rng);
+gen_uint!(gen_u32_velox, u32, Velox3bRng);
 gen_uint!(gen_u32_xorshift_128_32, u32, Xorshift128_32Rng);
 gen_uint!(gen_u32_xorshift_128_64, u32, Xorshift128_64Rng);
 gen_uint!(gen_u32_xorshift_128_plus, u32, Xorshift128PlusRng);
@@ -48,10 +49,10 @@ gen_uint!(gen_u32_xoroshiro_64_plus, u32, Xoroshiro64PlusRng);
 gen_uint!(gen_u32_xsm32, u32, Xsm32Rng);
 gen_uint!(gen_u32_xsm64, u32, Xsm64Rng);
 
+gen_uint!(gen_u64_gj, u64, GjRng);
 gen_uint!(gen_u64_jsf32, u64, Jsf32Rng);
 gen_uint!(gen_u64_jsf64, u64, Jsf64Rng);
-gen_uint!(gen_u64_gj, u64, GjRng);
-gen_uint!(gen_u64_velox, u64, Velox3bRng);
+gen_uint!(gen_u64_msws, u64, MswsRng);
 gen_uint!(gen_u64_sapparoth_32, u64, Sapparot32Rng);
 gen_uint!(gen_u64_sapparoth_64, u64, Sapparot64Rng);
 gen_uint!(gen_u64_sfc_32, u64, Sfc32Rng);
@@ -59,6 +60,7 @@ gen_uint!(gen_u64_sfc_64, u64, Sfc64Rng);
 gen_uint!(gen_u64_pcg_xsh_64_lcg, u64, PcgXsh64LcgRng);
 gen_uint!(gen_u64_pcg_xsl_64_lcg, u64, PcgXsl64LcgRng);
 gen_uint!(gen_u64_pcg_xsl_128_mcg, u64, PcgXsl128McgRng);
+gen_uint!(gen_u64_velox, u64, Velox3bRng);
 gen_uint!(gen_u64_xorshift_128_32, u64, Xorshift128_32Rng);
 gen_uint!(gen_u64_xorshift_128_64, u64, Xorshift128_64Rng);
 gen_uint!(gen_u64_xorshift_128_plus, u64, Xorshift128PlusRng);

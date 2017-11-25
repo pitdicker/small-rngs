@@ -12,15 +12,13 @@ Note: not all implementations of RNGs are verified to be correct yet.
 
 ## Currently implemented RNGs
 Various lesser-known PRNGs:
-- `GjRng`: A small random number generator by Geronimo Jones.
-- `Jsf32Rng`: A small random number generator designed by Bob Jenkins.
-- `Jsf64Rng`: A small random number generator designed by Bob Jenkins
-  (64-bit variant).
-- `Sfc32Rng`: A small random number generator designed by Chris Doty-Humphrey.
-- `Sfc64Rng`: A small random number generator designed by Chris Doty-Humphrey
-  (64-bit variant).
-- `Sapparot32Rng`: The Sapparoth-2 RNG by Ilya Levin (32-bit variant).
-- `Sapparot64Rng`: The Sapparoth-2 RNG by Ilya Levin (64-bit variant).
+- `GjRng`: A small chaotic RNG by Geronimo Jones.
+- `Jsf32Rng`, `Jsf64Rng`: A small random number generator designed by
+  Bob Jenkins.
+- `MswsRng`: Middle Square Weyl Sequence RNG.
+- `Sapparot32Rng`, `Sapparot64Rng`: The Sapparoth-2 RNG by Ilya Levin.
+- `Sfc32Rng`, `Sfc64Rng`: A small chaotic RNG combined with a counter, designed
+  by Chris Doty-Humphrey.
 - `Velox3bRng`: A small random number generator designed by Elias Yarrkov.
 
 Xorshift family:
@@ -34,8 +32,9 @@ Xorshift family:
 - `XorshiftMultWT64Rng`
 
 PCG family:
-- `PcgXsh64LcgRng`: A PCG random number generator (XSH 64/32 (LCG) variant).
-- `PcgXsl128LcgRng`: A PCG random number generator (XSL 128/64 (LCG) variant).
+- `PcgXsh64LcgRng`: A PCG random number generator (XSH 64/32 RR (LCG) variant).
+- `PcgXsl64LcgRng`: A PCG random number generator (XSL 64/32 RR (LCG) variant).
+- `PcgXsl128McgRng`: A PCG random number generator (XSL 128/64 RR (MCG) variant).
 
 ## Benchmarks
 
@@ -44,6 +43,7 @@ Result of `cargo bench`:
 test gen_u32_gj                  ... bench:       3,333 ns/iter (+/- 3) = 1200 MB/s
 test gen_u32_jsf32               ... bench:       2,229 ns/iter (+/- 1) = 1794 MB/s
 test gen_u32_jsf64               ... bench:       2,312 ns/iter (+/- 4) = 1730 MB/s
+test gen_u32_msws                ... bench:         971 ns/iter (+/- 2) = 4119 MB/s
 test gen_u32_pcg_xsh_64_lcg      ... bench:       1,222 ns/iter (+/- 13) = 3273 MB/s
 test gen_u32_pcg_xsl_64_lcg      ... bench:       1,197 ns/iter (+/- 2) = 3341 MB/s
 test gen_u32_pcg_xsl_128_mcg     ... bench:       1,461 ns/iter (+/- 1) = 2737 MB/s
@@ -64,6 +64,7 @@ test gen_u32_xsm64               ... bench:       2,423 ns/iter (+/- 8) = 1650 M
 test gen_u64_gj                  ... bench:       3,333 ns/iter (+/- 3) = 2400 MB/s
 test gen_u64_jsf32               ... bench:       3,078 ns/iter (+/- 3) = 2599 MB/s
 test gen_u64_jsf64               ... bench:       2,311 ns/iter (+/- 5) = 3461 MB/s
+test gen_u64_msws                ... bench:         971 ns/iter (+/- 1) = 8238 MB/s
 test gen_u64_pcg_xsh_64_lcg      ... bench:       3,603 ns/iter (+/- 6) = 2220 MB/s
 test gen_u64_pcg_xsl_64_lcg      ... bench:       3,439 ns/iter (+/- 19) = 2326 MB/s
 test gen_u64_pcg_xsl_128_mcg     ... bench:       1,468 ns/iter (+/- 6) = 5449 MB/s
@@ -88,6 +89,7 @@ Result of `cargo bench --target i686-unknown-linux-musl`:
 test gen_u32_gj                  ... bench:       8,787 ns/iter (+/- 118) = 455 MB/s
 test gen_u32_jsf32               ... bench:       2,680 ns/iter (+/- 34) = 1492 MB/s
 test gen_u32_jsf64               ... bench:       7,595 ns/iter (+/- 104) = 526 MB/s
+test gen_u32_msws                ... bench:       1,919 ns/iter (+/- 67) = 2084 MB/s
 test gen_u32_pcg_xsh_64_lcg      ... bench:       2,953 ns/iter (+/- 75) = 1354 MB/s
 test gen_u32_pcg_xsl_64_lcg      ... bench:       2,948 ns/iter (+/- 29) = 1356 MB/s
 test gen_u32_pcg_xsl_128_mcg     ... bench:      12,736 ns/iter (+/- 121) = 314 MB/s
@@ -108,6 +110,7 @@ test gen_u32_xsm64               ... bench:       6,007 ns/iter (+/- 283) = 665 
 test gen_u64_gj                  ... bench:       8,812 ns/iter (+/- 125) = 907 MB/s
 test gen_u64_jsf32               ... bench:       3,838 ns/iter (+/- 63) = 2084 MB/s
 test gen_u64_jsf64               ... bench:       7,661 ns/iter (+/- 73) = 1044 MB/s
+test gen_u64_msws                ... bench:       1,995 ns/iter (+/- 72) = 4010 MB/s
 test gen_u64_pcg_xsh_64_lcg      ... bench:       6,335 ns/iter (+/- 111) = 1262 MB/s
 test gen_u64_pcg_xsl_64_lcg      ... bench:       5,769 ns/iter (+/- 68) = 1386 MB/s
 test gen_u64_pcg_xsl_128_mcg     ... bench:      13,802 ns/iter (+/- 254) = 579 MB/s
