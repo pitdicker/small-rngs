@@ -12,12 +12,12 @@
 use rand_core::{Rng, SeedFromRng, Error, impls};
 
 #[derive(Clone)]
-pub struct XorshiftMultWT32Rng {
+pub struct XorshiftMt32Rng {
     s0: u32,
     s1: u32,
 }
 
-impl SeedFromRng for XorshiftMultWT32Rng {
+impl SeedFromRng for XorshiftMt32Rng {
     fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
         let mut tuple: (u32, u32);
         loop {
@@ -27,11 +27,11 @@ impl SeedFromRng for XorshiftMultWT32Rng {
             }
         }
         let (s0, s1) = tuple;
-        Ok(XorshiftMultWT32Rng{ s0: s0, s1: s1 })
+        Ok(XorshiftMt32Rng{ s0: s0, s1: s1 })
     }
 }
 
-impl Rng for XorshiftMultWT32Rng {
+impl Rng for XorshiftMt32Rng {
     #[inline]
     fn next_u32(&mut self) -> u32 {
         let x = self.s0;
@@ -64,12 +64,12 @@ impl Rng for XorshiftMultWT32Rng {
 
 
 #[derive(Clone)]
-pub struct XorshiftMultWT64Rng {
+pub struct XorshiftMt64Rng {
     s0: u64,
     s1: u64,
 }
 
-impl XorshiftMultWT64Rng {
+impl XorshiftMt64Rng {
     #[inline]
     fn xorshift(&mut self) -> u64 {
         let x = self.s0;
@@ -81,7 +81,7 @@ impl XorshiftMultWT64Rng {
     }
 }
 
-impl SeedFromRng for XorshiftMultWT64Rng {
+impl SeedFromRng for XorshiftMt64Rng {
     fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
         let mut tuple: (u64, u64);
         loop {
@@ -91,11 +91,11 @@ impl SeedFromRng for XorshiftMultWT64Rng {
             }
         }
         let (s0, s1) = tuple;
-        Ok(XorshiftMultWT64Rng{ s0: s0, s1: s1 })
+        Ok(XorshiftMt64Rng{ s0: s0, s1: s1 })
     }
 }
 
-impl Rng for XorshiftMultWT64Rng {
+impl Rng for XorshiftMt64Rng {
     #[inline]
     fn next_u32(&mut self) -> u32 {
         (self.xorshift().wrapping_mul(2685821657736338717) >> 16) as u32

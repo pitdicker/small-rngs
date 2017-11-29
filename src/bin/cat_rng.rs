@@ -49,10 +49,12 @@ fn main() {
     ctors.insert("xorshift_128_32", Box::new(|| Xorshift128_32Rng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("xorshift_128_64", Box::new(|| Xorshift128_64Rng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("xorshift_128_plus", Box::new(|| Xorshift128PlusRng::new().map(|rng| Box::new(rng) as BR)));
-    ctors.insert("xorshift_mult_wt_32", Box::new(|| XorshiftMultWT32Rng::new().map(|rng| Box::new(rng) as BR)));
-    ctors.insert("xorshift_mult_wt_64", Box::new(|| XorshiftMultWT64Rng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("xorshift_mt_32", Box::new(|| XorshiftMt32Rng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("xorshift_mt_64", Box::new(|| XorshiftMt64Rng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("xoroshiro_128_plus", Box::new(|| Xoroshiro128PlusRng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("xoroshiro_64_plus", Box::new(|| Xoroshiro64PlusRng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("xoroshiro_mt_64of128", Box::new(|| XoroshiroMt64of128Rng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("xoroshiro_mt_32of128", Box::new(|| XoroshiroMt32of128Rng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("xsm32", Box::new(|| Xsm32Rng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("xsm64", Box::new(|| Xsm64Rng::new().map(|rng| Box::new(rng) as BR)));
 

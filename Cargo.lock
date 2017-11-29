@@ -35,7 +35,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "rand"
 version = "0.3.17"
-source = "git+https://github.com/dhardy/rand#8b0d1ad9a5d0dce79379f769a39a232b3d615318"
+source = "git+https://github.com/dhardy/rand#9eca335903c42af65e42fba43f909acafb41c5e1"
 dependencies = [
  "fuchsia-zircon 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.2.33 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -45,7 +45,7 @@ dependencies = [
 [[package]]
 name = "rand_core"
 version = "0.0.1"
-source = "git+https://github.com/dhardy/rand#8b0d1ad9a5d0dce79379f769a39a232b3d615318"
+source = "git+https://github.com/dhardy/rand#9eca335903c42af65e42fba43f909acafb41c5e1"
 
 [metadata]
 "checksum bitflags 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)" = "aad18937a628ec6abcd26d1489012cc0e18c21798210f491af69ded9b881106d"
