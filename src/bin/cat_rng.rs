@@ -37,6 +37,8 @@ fn main() {
     ctors.insert("gj", Box::new(|| GjRng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("jsf32", Box::new(|| Jsf32Rng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("jsf64", Box::new(|| Jsf64Rng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("kiss32", Box::new(|| Kiss32Rng::new().map(|rng| Box::new(rng) as BR)));
+    ctors.insert("kiss64", Box::new(|| Kiss64Rng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("msws", Box::new(|| MswsRng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("pcg_xsh_64_lcg", Box::new(|| PcgXsh64LcgRng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("pcg_xsl_64_lcg", Box::new(|| PcgXsl64LcgRng::new().map(|rng| Box::new(rng) as BR)));

@@ -30,6 +30,8 @@ macro_rules! gen_uint {
 gen_uint!(gen_u32_gj, u32, GjRng);
 gen_uint!(gen_u32_jsf32, u32, Jsf32Rng);
 gen_uint!(gen_u32_jsf64, u32, Jsf64Rng);
+gen_uint!(gen_u32_kiss32, u32, Kiss32Rng);
+gen_uint!(gen_u32_kiss64, u32, Kiss64Rng);
 gen_uint!(gen_u32_msws, u32, MswsRng);
 gen_uint!(gen_u32_pcg_xsh_64_lcg, u32, PcgXsh64LcgRng);
 gen_uint!(gen_u32_pcg_xsl_64_lcg, u32, PcgXsl64LcgRng);
@@ -54,6 +56,8 @@ gen_uint!(gen_u32_xsm64, u32, Xsm64Rng);
 gen_uint!(gen_u64_gj, u64, GjRng);
 gen_uint!(gen_u64_jsf32, u64, Jsf32Rng);
 gen_uint!(gen_u64_jsf64, u64, Jsf64Rng);
+gen_uint!(gen_u64_kiss32, u64, Kiss32Rng);
+gen_uint!(gen_u64_kiss64, u64, Kiss64Rng);
 gen_uint!(gen_u64_msws, u64, MswsRng);
 gen_uint!(gen_u64_sapparoth_32, u64, Sapparot32Rng);
 gen_uint!(gen_u64_sapparoth_64, u64, Sapparot64Rng);

@@ -5,6 +5,7 @@ extern crate core;
 
 mod gj;
 mod jsf;
+mod kiss;
 mod msws;
 mod pcg;
 mod sapparoth;
@@ -19,6 +20,7 @@ mod xsm;
 
 pub use self::gj::GjRng;
 pub use self::jsf::{Jsf32Rng, Jsf64Rng};
+pub use self::kiss::{Kiss32Rng, Kiss64Rng};
 pub use self::msws::MswsRng;
 pub use self::pcg::{PcgXsh64LcgRng, PcgXsl64LcgRng, PcgXsl128McgRng};
 pub use self::sapparoth::{Sapparot32Rng, Sapparot64Rng};
