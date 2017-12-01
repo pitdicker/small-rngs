@@ -38,7 +38,7 @@ impl Rng for PcgXsh64LcgRng {
     fn next_u32(&mut self) -> u32 {
         let state = self.state;
         // prepare the LCG for the next round
-        self.state = state.wrapping_mul(6364136223846793005);
+        self.state = self.state.wrapping_mul(6364136223846793005);
 
         // output function XSH RR: xorshift high (bits), followed by a random rotate
         // good for 64-bit state, 32-bit output
@@ -52,7 +52,7 @@ impl Rng for PcgXsh64LcgRng {
 
         let xsh = (((state >> XSHIFT) ^ state) >> SPARE) as u32;
 
-        self.state = state.wrapping_add(self.increment);
+        self.state = self.state.wrapping_add(self.increment);
         xsh.rotate_right((state >> ROTATE) as u32)
     }
 
@@ -104,7 +104,7 @@ impl Rng for PcgXsl64LcgRng {
     fn next_u32(&mut self) -> u32 {
         let state = self.state;
         // prepare the LCG for the next round
-        self.state = state.wrapping_mul(6364136223846793005);
+        self.state = self.state.wrapping_mul(6364136223846793005);
 
         // Output function XSL RR ("xorshift low (bits), random rotation"):
         const IN_BITS: u32 = 64;
@@ -117,7 +117,7 @@ impl Rng for PcgXsl64LcgRng {
 
         let xsl = ((state >> XSHIFT) as u32) ^ (state as u32);
 
-        self.state = state.wrapping_add(self.increment);
+        self.state = self.state.wrapping_add(self.increment);
         xsl.rotate_right((state >> ROTATE) as u32)
     }
 
@@ -174,7 +174,7 @@ impl Rng for PcgXsl128McgRng {
     fn next_u64(&mut self) -> u64 {
         let state = self.state;
         // prepare for the next round
-        self.state = state.wrapping_mul(MULTIPLIER);
+        self.state = self.state.wrapping_mul(MULTIPLIER);
 
         // Output function XSL RR ("xorshift low (bits), random rotation"):
         // XSL uses xor folding of the high and the low u64. This minimizes the
