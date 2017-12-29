@@ -184,11 +184,9 @@ impl Rng for PcgXsl128McgRng {
     fn next_u64(&mut self) -> u64 {
         let state = self.state;
         // prepare for the next round
-        self.state = self.state.wrapping_mul(MULTIPLIER);
+        self.state = state.wrapping_mul(MULTIPLIER);
 
         // Output function XSL RR ("xorshift low (bits), random rotation"):
-        // XSL uses xor folding of the high and the low u64. This minimizes the
-        // amount of information about internal state that leaks out.
         const IN_BITS: u32 = 128;
         const OUT_BITS: u32 = 64;
         const SPARE_BITS: u32 = IN_BITS - OUT_BITS;
@@ -199,6 +197,78 @@ impl Rng for PcgXsl128McgRng {
 
         let xsl = ((state >> XSHIFT) as u64) ^ (state as u64);
         xsl.rotate_right((state >> ROTATE) as u32)
+    }
+
+    #[cfg(feature = "i128_support")]
+    fn next_u128(&mut self) -> u128 {
+        impls::next_u128_via_u64(self)
+    }
+
+    fn fill_bytes(&mut self, dest: &mut [u8]) {
+        impls::fill_bytes_via_u64(self, dest)
+    }
+
+    fn try_fill(&mut self, dest: &mut [u8]) -> Result<(), Error> {
+        Ok(self.fill_bytes(dest))
+    }
+}
+
+
+
+#[derive(Clone)]
+pub struct MwpRng {
+    m: u64,
+    w: u64,
+}
+
+impl SeedableRng for MwpRng {
+    type Seed = [u8; 16];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u64 = [0u64; 2];
+        le::read_u64_into(&seed, &mut seed_u64);
+        Self { m: seed_u64[0] | 1, w: seed_u64[1] }
+    }
+}
+
+impl Rng for MwpRng {
+    #[inline]
+    fn next_u32(&mut self) -> u32 {
+        self.m = self.m.wrapping_mul(6364136223846793005);
+        self.w = self.w.wrapping_add(1442695040888963407);
+        let state = self.m ^ self.w;
+
+        // output function XSH RR: xorshift high (bits), followed by a random rotate
+        const IN_BITS: u32 = 64;
+        const OUT_BITS: u32 = 32;
+        const OP_BITS: u32 = 5; // log2(OUT_BITS)
+
+        const ROTATE: u32 = IN_BITS - OP_BITS; // 59
+        const XSHIFT: u32 = (OUT_BITS + OP_BITS) / 2; // 18
+        const SPARE: u32 = IN_BITS - OUT_BITS - OP_BITS; // 27
+
+        let xsh = (((state >> XSHIFT) ^ state) >> SPARE) as u32;
+        xsh.rotate_right((state >> ROTATE) as u32)
+    }
+
+    #[inline]
+    fn next_u64(&mut self) -> u64 {
+        // MCG
+        self.m = self.m.wrapping_mul(6364136223846793005);
+        // Weyl sequence
+        self.w = self.w.wrapping_add(1442695040888963407);
+        let mut state = self.m ^ self.w;
+
+        // output function RXS M XS:
+        // random xorshift, mcg multiply, fixed xorshift
+        const BITS: u64 = 64;
+        const OP_BITS: u64 = 5; // log2(BITS)
+        const MASK: u64 = BITS - 1;
+
+        let rshift = (state >> (BITS - OP_BITS)) & MASK;
+        state ^= state >> (OP_BITS + rshift);
+        state = state.wrapping_mul(6364136223846793005);
+        state ^ (state >> ((2 * BITS + 2) / 3))
     }
 
     #[cfg(feature = "i128_support")]
