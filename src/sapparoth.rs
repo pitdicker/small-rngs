@@ -9,7 +9,7 @@
 
 //! A fast pseudorandom number generator by Ilya Levin.
 
-use rand_core::{Rng, SeedFromRng, Error, impls};
+use rand_core::{Rng, SeedableRng, Error, impls, le};
 
 /// The Sapparot-2 random number generator by Ilya Levin (32-bit version).
 ///
@@ -27,11 +27,15 @@ pub struct Sapparot32Rng {
     c: u32,
 }
 
-impl SeedFromRng for Sapparot32Rng {
-    fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
-        Ok(Sapparot32Rng{ a: other.next_u32(),
-                          b: other.next_u32(),
-                          c: other.next_u32() })
+impl SeedableRng for Sapparot32Rng {
+    type Seed = [u8; 12];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u32 = [0u32; 3];
+        le::read_u32_into(&seed, &mut seed_u32);
+        Self { a: seed_u32[0],
+               b: seed_u32[1],
+               c: seed_u32[2] }
     }
 }
 
@@ -89,11 +93,15 @@ pub struct Sapparot64Rng {
     c: u64,
 }
 
-impl SeedFromRng for Sapparot64Rng {
-    fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
-        Ok(Sapparot64Rng{ a: other.next_u64(),
-                          b: other.next_u64(),
-                          c: other.next_u64() })
+impl SeedableRng for Sapparot64Rng {
+    type Seed = [u8; 24];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u64 = [0u64; 3];
+        le::read_u64_into(&seed, &mut seed_u64);
+        Self { a: seed_u64[0],
+               b: seed_u64[1],
+               c: seed_u64[2] }
     }
 }
 

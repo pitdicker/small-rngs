@@ -9,7 +9,7 @@
 
 //! Bob Jenkins small fast pseudorandom number generator.
 
-use rand_core::{Rng, SeedFromRng, Error, impls};
+use rand_core::{Rng, SeedableRng, Error, impls, le};
 
 /// A small random number generator designed by Bob Jenkins.
 ///
@@ -29,17 +29,21 @@ pub struct Jsf32Rng {
     d: u32,
 }
 
-impl SeedFromRng for Jsf32Rng {
-    fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
-        let seed = other.next_u32();
-        let mut state = Jsf32Rng{ a: 0xf1ea5eed, // fleaseed
-                                  b: seed,
-                                  c: seed,
-                                  d: seed};
+impl SeedableRng for Jsf32Rng {
+    type Seed = [u8; 4];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u32 = [0u32; 1];
+        le::read_u32_into(&seed, &mut seed_u32);
+
+        let mut state = Self { a: 0xf1ea5eed, // fleaseed
+                               b: seed_u32[0],
+                               c: seed_u32[0],
+                               d: seed_u32[0]};
         for _ in 0..20 {
             state.next_u32();
         }
-        Ok(state)
+        state
     }
 }
 
@@ -94,17 +98,21 @@ pub struct Jsf64Rng {
     d: u64,
 }
 
-impl SeedFromRng for Jsf64Rng {
-    fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
-        let seed = other.next_u64();
-        let mut state = Jsf64Rng{ a: 0xf1ea5eed, // fleaseed
-                                  b: seed,
-                                  c: seed,
-                                  d: seed};
+impl SeedableRng for Jsf64Rng {
+    type Seed = [u8; 8];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u64 = [0u64; 1];
+        le::read_u64_into(&seed, &mut seed_u64);
+
+        let mut state = Self { a: 0xf1ea5eed, // fleaseed
+                               b: seed_u64[0],
+                               c: seed_u64[0],
+                               d: seed_u64[0]};
         for _ in 0..20 {
             state.next_u64();
         }
-        Ok(state)
+        state
     }
 }
 

@@ -9,7 +9,7 @@
 
 //! Middle Square Weyl Sequence RNG
 
-use rand_core::{Rng, SeedFromRng, Error, impls};
+use rand_core::{Rng, SeedableRng, Error, impls, le};
 
 /// Middle Square Weyl Sequence RNG
 ///
@@ -27,7 +27,19 @@ pub struct MswsRng {
     s: u64,
 }
 
-impl SeedFromRng for MswsRng {
+impl SeedableRng for MswsRng {
+    type Seed = [u8; 16];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u64 = [0u64; 2];
+        le::read_u64_into(&seed, &mut seed_u64);
+        // The constant s should be set to a random 64-bit pattern with the
+        // upper 32 bits non-zero and the least significant bit set to 1
+        let stream = seed_u64[0] | 1;
+        if stream & 0xffffffff_00000000 != 0 { panic!(); }
+        Self { x: seed_u64[1], w: 0, s: stream }
+    }
+
     fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
         let mut stream;
         loop {
@@ -36,7 +48,7 @@ impl SeedFromRng for MswsRng {
             stream = other.next_u64() | 1;
             if stream & 0xffffffff_00000000 != 0 { break; }
         }
-        Ok(MswsRng { x: other.next_u64(), w: 0, s: stream })
+        Ok(Self { x: other.next_u64(), w: 0, s: stream })
     }
 }
 

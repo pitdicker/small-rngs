@@ -9,7 +9,7 @@
 
 //! The Velox 3b random number generator.
 
-use rand_core::{Rng, SeedFromRng, Error, impls};
+use rand_core::{Rng, SeedableRng, Error, impls, le};
 
 /// A small random number generator designed by Elias Yarrkov.
 ///
@@ -64,11 +64,15 @@ impl Velox3bRng {
     }
 }
 
-impl SeedFromRng for Velox3bRng {
-    fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
-        let seed = other.next_u32();
+impl SeedableRng for Velox3bRng {
+    type Seed = [u8; 4];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u32 = [0u32; 1];
+        le::read_u32_into(&seed, &mut seed_u32);
+
         let mut state = Velox3bRng {
-            v: [seed, 0x3c6ef372, 0xdaa66d2b, 0x78dde6e4],
+            v: [seed_u32[0], 0x3c6ef372, 0xdaa66d2b, 0x78dde6e4],
             ctr: [0x9e3779b9, 0x3c6ef372, 0xdaa66d2b, 0x78dde6e4],
             // 1*0x9e3779b9, 2*0x9e3779b9, 3*0x9e3779b9, 4*0x9e3779b9
             pos: 0};
@@ -76,7 +80,7 @@ impl SeedFromRng for Velox3bRng {
         for _ in 0..16 {
             state.next_u32();
         }
-        Ok(state)
+        state
     }
 }
 

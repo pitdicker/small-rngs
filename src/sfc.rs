@@ -9,7 +9,7 @@
 
 //! A Small Fast Counting RNG, version 4.
 
-use rand_core::{Rng, SeedFromRng, Error, impls};
+use rand_core::{Rng, SeedableRng, Error, impls, le};
 
 /// A Small Fast Counting RNG designed by Chris Doty-Humphrey (32-bit version).
 ///
@@ -29,16 +29,20 @@ pub struct Sfc32Rng {
     counter: u32,
 }
 
-impl SeedFromRng for Sfc32Rng {
-    fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
-        let mut state = Sfc32Rng { a: other.next_u32(),
-                                   b: other.next_u32(),
-                                   c: other.next_u32(),
-                                   counter: 1};
+impl SeedableRng for Sfc32Rng {
+    type Seed = [u8; 12];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u32 = [0u32; 3];
+        le::read_u32_into(&seed, &mut seed_u32);
+        let mut state = Self { a: seed_u32[0],
+                               b: seed_u32[1],
+                               c: seed_u32[2],
+                               counter: 1};
         for _ in 0..15 {
             state.next_u32();
         }
-        Ok(state)
+        state
     }
 }
 
@@ -99,16 +103,20 @@ pub struct Sfc64Rng {
     counter: u64,
 }
 
-impl SeedFromRng for Sfc64Rng {
-    fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
-        let mut state = Sfc64Rng { a: other.next_u64(),
-                                   b: other.next_u64(),
-                                   c: other.next_u64(),
-                                   counter: 1};
+impl SeedableRng for Sfc64Rng {
+    type Seed = [u8; 24];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u64 = [0u64; 3];
+        le::read_u64_into(&seed, &mut seed_u64);
+        let mut state = Self { a: seed_u64[0],
+                               b: seed_u64[1],
+                               c: seed_u64[2],
+                               counter: 1};
         for _ in 0..20 {
-            state.next_u32();
+            state.next_u64();
         }
-        Ok(state)
+        state
     }
 }
 

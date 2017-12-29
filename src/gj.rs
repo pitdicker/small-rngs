@@ -9,7 +9,7 @@
 
 //! Geronimo Jones' random number generator.
 
-use rand_core::{Rng, SeedFromRng, Error, impls};
+use rand_core::{Rng, SeedableRng, Error, impls, le};
 
 /// A small random number generator by Geronimo Jones.
 ///
@@ -19,6 +19,7 @@ use rand_core::{Rng, SeedFromRng, Error, impls};
 /// - Period: 2<sup>64</sup>
 /// - State: 256 bits
 /// - Word size: 64 bits
+/// - Seed size: 128 bits.
 /// - Passes BigCrush and PractRand
 /// - Based "on emperical methods with just a tiny amount of theory as a guide",
 ///   instead of a sound theoretical basis.
@@ -30,16 +31,21 @@ pub struct GjRng {
     d: u64,
 }
 
-impl SeedFromRng for GjRng {
-    fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
-        let mut state = GjRng { a: other.next_u64(),
-                                b: other.next_u64(),
+impl SeedableRng for GjRng {
+    type Seed = [u8; 16];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u64 = [0u64; 2];
+        le::read_u64_into(&seed, &mut seed_u64);
+
+        let mut state = GjRng { a: seed_u64[0],
+                                b: seed_u64[1],
                                 c: 5000001,
                                 d: 0};
         for _ in 0..14 {
             state.next_u64();
         }
-        Ok(state)
+        state
     }
 }
 
@@ -82,4 +88,3 @@ impl Rng for GjRng {
         Ok(self.fill_bytes(dest))
     }
 }
-

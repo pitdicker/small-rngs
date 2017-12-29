@@ -9,7 +9,7 @@
 
 //! The XSM random number generator.
 
-use rand_core::{Rng, SeedFromRng, Error, impls};
+use rand_core::{Rng, SeedableRng, Error, impls, le};
 
 /// XSM (32-bit version).
 ///
@@ -29,14 +29,20 @@ pub struct Xsm32Rng {
     history: u32,
 }
 
-impl SeedFromRng for Xsm32Rng {
-    fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
-        let mut state = Xsm32Rng { lcg_low: other.next_u32(),
-                                   lcg_high: other.next_u32(),
-                                   lcg_adder: other.next_u32() | 1,
-                                   history: 0};
+impl SeedableRng for Xsm32Rng {
+    type Seed = [u8; 12];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u32 = [0u32; 3];
+        le::read_u32_into(&seed, &mut seed_u32);
+        let mut state = Self {
+            lcg_low: seed_u32[0],
+            lcg_high: seed_u32[1],
+            lcg_adder: seed_u32[2] | 1,
+            history: 0,
+        };
         state.next_u32();
-        Ok(state)
+        state
     }
 }
 
@@ -99,14 +105,20 @@ pub struct Xsm64Rng {
     history: u64,
 }
 
-impl SeedFromRng for Xsm64Rng {
-    fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
-        let mut state = Xsm64Rng { lcg_low: other.next_u64(),
-                                   lcg_high: other.next_u64(),
-                                   lcg_adder: other.next_u64() | 1,
-                                   history: 0};
-        state.next_u32();
-        Ok(state)
+impl SeedableRng for Xsm64Rng {
+    type Seed = [u8; 24];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u64 = [0u64; 3];
+        le::read_u64_into(&seed, &mut seed_u64);
+        let mut state = Self {
+            lcg_low: seed_u64[0],
+            lcg_high: seed_u64[1],
+            lcg_adder: seed_u64[2] | 1,
+            history: 0,
+        };
+        state.next_u64();
+        state
     }
 }
 

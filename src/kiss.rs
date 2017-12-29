@@ -10,7 +10,7 @@
 //! KISS rondom number generators
 
 
-use rand_core::{Rng, SeedFromRng, Error, impls};
+use rand_core::{Rng, SeedableRng, Error, impls, le};
 use core::fmt;
 use core::num::Wrapping as Wr;
 
@@ -39,7 +39,21 @@ impl fmt::Debug for Kiss32Rng {
     }
 }
 
-impl SeedFromRng for Kiss32Rng {
+impl SeedableRng for Kiss32Rng {
+    type Seed = [u8; 16];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u32 = [0u32; 4];
+        le::read_u32_into(&seed, &mut seed_u32);
+
+        Self {
+            z: Wr(seed_u32[0]),
+            w: Wr(seed_u32[1]),
+            jsr: Wr(if seed_u32[2] != 0 { seed_u32[2] } else { 0xBAD_5EED }),
+            jcong: Wr(seed_u32[3]),
+        }
+    }
+
     fn from_rng<R: Rng>(mut rng: R) -> Result<Self, Error> {
         let z = rng.next_u32();
         let w = rng.next_u32();
@@ -115,7 +129,22 @@ impl fmt::Debug for Kiss64Rng {
     }
 }
 
-impl SeedFromRng for Kiss64Rng {
+impl SeedableRng for Kiss64Rng {
+    type Seed = [u8; 32];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u64 = [0u64; 4];
+        le::read_u64_into(&seed, &mut seed_u64);
+
+        Self {
+            c: Wr(seed_u64[0]),
+            x: Wr(seed_u64[1]),
+            y: Wr(if seed_u64[2] != 0 { seed_u64[2] }
+                  else { 0x0DD_B1A5E5_BAD_5EED }),
+            z: Wr(seed_u64[3]),
+        }
+    }
+
     fn from_rng<R: Rng>(mut rng: R) -> Result<Self, Error> {
         let c = rng.next_u64();
         let x = rng.next_u64();

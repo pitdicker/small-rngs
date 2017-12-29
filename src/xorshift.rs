@@ -9,7 +9,7 @@
 
 //! Plain Xorshift rondom number generators
 
-use rand_core::{Rng, SeedFromRng, Error, impls};
+use rand_core::{Rng, SeedableRng, Error, impls, le};
 use core::fmt;
 
 /// An Xorshift random number generator (128/32-bit variant).
@@ -21,7 +21,7 @@ use core::fmt;
 /// - Period: 2<sup>128</sup> - 1
 /// - State: 128 bits
 /// - Word size: 32 bits
-/// - Seed size: 128 bits. Will panic if seed is all zeros.
+/// - Seed size: 128 bits
 /// - Low quality
 /// - The small RNG currently available in rand (0.3.18)
 #[derive(Clone)]
@@ -39,17 +39,23 @@ impl fmt::Debug for Xorshift128_32Rng {
     }
 }
 
-impl SeedFromRng for Xorshift128_32Rng {
-    fn from_rng<R: Rng>(mut rng: R) -> Result<Self, Error> {
-        let mut tuple: (u32, u32, u32, u32);
-        loop {
-            tuple = (rng.next_u32(), rng.next_u32(), rng.next_u32(), rng.next_u32());
-            if tuple != (0, 0, 0, 0) {
-                break;
-            }
+impl SeedableRng for Xorshift128_32Rng {
+    type Seed = [u8; 16];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u32 = [0u32; 4];
+        le::read_u32_into(&seed, &mut seed_u32);
+
+        if seed_u32.iter().all(|&x| x == 0) {
+            seed_u32 = [0xBAD_5EED, 0xBAD_5EED, 0xBAD_5EED, 0xBAD_5EED];
         }
-        let (x, y, z, w) = tuple;
-        Ok(Xorshift128_32Rng { x: x, y: y, z: z, w: w })
+
+        Self {
+            x: seed_u32[0],
+            y: seed_u32[1],
+            z: seed_u32[2],
+            w: seed_u32[3],
+        }
     }
 }
 
@@ -103,7 +109,7 @@ impl Rng for Xorshift128_32Rng {
 /// - Period: 2<sup>128</sup> - 1
 /// - State: 128 bits
 /// - Word size: 64 bits
-/// - Seed size: 128 bits. Will panic if seed is all zeros.
+/// - Seed size: 128 bits
 /// - Low quality, very fast
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
@@ -118,17 +124,18 @@ impl fmt::Debug for Xorshift128_64Rng {
     }
 }
 
-impl SeedFromRng for Xorshift128_64Rng {
-    fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
-        let mut tuple: (u64, u64);
-        loop {
-            tuple = (other.next_u64(), other.next_u64());
-            if tuple != (0, 0) {
-                break;
-            }
+impl SeedableRng for Xorshift128_64Rng {
+    type Seed = [u8; 16];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u64 = [0u64; 2];
+        le::read_u64_into(&seed, &mut seed_u64);
+
+        if seed_u64.iter().all(|&x| x == 0) {
+            seed_u64 = [0x0DD_B1A5E5_BAD_5EED, 0x0DD_B1A5E5_BAD_5EED];
         }
-        let (s0, s1) = tuple;
-        Ok(Xorshift128_64Rng{ s0: s0, s1: s1 })
+
+        Self { s0: seed_u64[0], s1: seed_u64[1] }
     }
 }
 

@@ -9,7 +9,7 @@
 
 //! Xorshift* random number generators
 
-use rand_core::{Rng, SeedFromRng, Error, impls};
+use rand_core::{Rng, SeedableRng, Error, impls, le};
 
 #[derive(Clone)]
 pub struct XorshiftMt32Rng {
@@ -17,17 +17,18 @@ pub struct XorshiftMt32Rng {
     s1: u32,
 }
 
-impl SeedFromRng for XorshiftMt32Rng {
-    fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
-        let mut tuple: (u32, u32);
-        loop {
-            tuple = (other.next_u32(), other.next_u32());
-            if tuple != (0, 0) {
-                break;
-            }
+impl SeedableRng for XorshiftMt32Rng {
+    type Seed = [u8; 8];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u32 = [0u32; 2];
+        le::read_u32_into(&seed, &mut seed_u32);
+
+        if seed_u32.iter().all(|&x| x == 0) {
+            seed_u32 = [0xBAD_5EED, 0xBAD_5EED];
         }
-        let (s0, s1) = tuple;
-        Ok(XorshiftMt32Rng{ s0: s0, s1: s1 })
+
+        Self { s0: seed_u32[0], s1: seed_u32[1] }
     }
 }
 
@@ -81,17 +82,18 @@ impl XorshiftMt64Rng {
     }
 }
 
-impl SeedFromRng for XorshiftMt64Rng {
-    fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
-        let mut tuple: (u64, u64);
-        loop {
-            tuple = (other.next_u64(), other.next_u64());
-            if tuple != (0, 0) {
-                break;
-            }
+impl SeedableRng for XorshiftMt64Rng {
+    type Seed = [u8; 16];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u64 = [0u64; 2];
+        le::read_u64_into(&seed, &mut seed_u64);
+
+        if seed_u64.iter().all(|&x| x == 0) {
+            seed_u64 = [0x0DD_B1A5E5_BAD_5EED, 0x0DD_B1A5E5_BAD_5EED];
         }
-        let (s0, s1) = tuple;
-        Ok(XorshiftMt64Rng{ s0: s0, s1: s1 })
+
+        Self { s0: seed_u64[0], s1: seed_u64[1] }
     }
 }
 
@@ -119,13 +121,3 @@ impl Rng for XorshiftMt64Rng {
         Ok(self.fill_bytes(dest))
     }
 }
-
-
-
-
-
-
-
-
-
-

@@ -9,7 +9,7 @@
 
 //! Xorshift* random number generators
 
-use rand_core::{Rng, SeedFromRng, Error, impls};
+use rand_core::{Rng, SeedableRng, Error, impls, le};
 
 #[derive(Clone)]
 pub struct XoroshiroMt32of128Rng {
@@ -17,17 +17,18 @@ pub struct XoroshiroMt32of128Rng {
     s1: u64,
 }
 
-impl SeedFromRng for XoroshiroMt32of128Rng {
-    fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
-        let mut tuple: (u64, u64);
-        loop {
-            tuple = (other.next_u64(), other.next_u64());
-            if tuple != (0, 0) {
-                break;
-            }
+impl SeedableRng for XoroshiroMt32of128Rng {
+    type Seed = [u8; 16];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u64 = [0u64; 2];
+        le::read_u64_into(&seed, &mut seed_u64);
+
+        if seed_u64.iter().all(|&x| x == 0) {
+            seed_u64 = [0x0DD_B1A5E5_BAD_5EED, 0x0DD_B1A5E5_BAD_5EED];
         }
-        let (s0, s1) = tuple;
-        Ok(XoroshiroMt32of128Rng{ s0: s0, s1: s1 })
+
+        Self { s0: seed_u64[0], s1: seed_u64[1] }
     }
 }
 
@@ -71,17 +72,18 @@ pub struct XoroshiroMt64of128Rng {
     s1: u64,
 }
 
-impl SeedFromRng for XoroshiroMt64of128Rng {
-    fn from_rng<R: Rng>(mut other: R) -> Result<Self, Error> {
-        let mut tuple: (u64, u64);
-        loop {
-            tuple = (other.next_u64(), other.next_u64());
-            if tuple != (0, 0) {
-                break;
-            }
+impl SeedableRng for XoroshiroMt64of128Rng {
+    type Seed = [u8; 16];
+
+    fn from_seed(seed: Self::Seed) -> Self {
+        let mut seed_u64 = [0u64; 2];
+        le::read_u64_into(&seed, &mut seed_u64);
+
+        if seed_u64.iter().all(|&x| x == 0) {
+            seed_u64 = [0x0DD_B1A5E5_BAD_5EED, 0x0DD_B1A5E5_BAD_5EED];
         }
-        let (s0, s1) = tuple;
-        Ok(XoroshiroMt64of128Rng{ s0: s0, s1: s1 })
+
+        Self { s0: seed_u64[0], s1: seed_u64[1] }
     }
 }
 
