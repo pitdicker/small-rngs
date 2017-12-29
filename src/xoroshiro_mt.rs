@@ -101,7 +101,7 @@ impl Rng for XoroshiroMt64of128Rng {
     }
 
     #[inline]
-    #[cfg(feature = "i128_support")]
+    #[cfg(not(any(target_pointer_width = "32", not(feature = "i128_support"))))]
     fn next_u64(&mut self) -> u64 {
         let s0 = self.s0;
         let mut s1 = self.s1;
@@ -115,7 +115,7 @@ impl Rng for XoroshiroMt64of128Rng {
     }
 
     #[inline]
-    #[cfg(not(feature = "i128_support"))]
+    #[cfg(any(target_pointer_width = "32", not(feature = "i128_support")))]
     fn next_u64(&mut self) -> u64 {
         let s0 = self.s0;
         let mut s1 = self.s1;
@@ -165,7 +165,7 @@ macro_rules! wmul_impl {
 }
 
 wmul_impl! { u32, u64, 32 }
-#[cfg(feature = "i128_support")]
+#[cfg(not(any(target_pointer_width = "32", not(feature = "i128_support"))))]
 wmul_impl! { u64, u128, 64 }
 
 #[cfg(any(target_pointer_width = "32", not(feature = "i128_support")))]
