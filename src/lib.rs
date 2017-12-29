@@ -3,6 +3,7 @@
 extern crate rand_core;
 extern crate core;
 
+mod ciprng;
 mod gj;
 mod jsf;
 mod kiss;
@@ -18,6 +19,7 @@ mod xoroshiro;
 mod xoroshiro_mt;
 mod xsm;
 
+pub use self::ciprng::CiRng;
 pub use self::gj::GjRng;
 pub use self::jsf::{Jsf32Rng, Jsf64Rng};
 pub use self::kiss::{Kiss32Rng, Kiss64Rng};

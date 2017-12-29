@@ -34,6 +34,7 @@ type BR = Box<Rng>;
 fn main() {
     let mut ctors: HashMap<&'static str,
             Box<Fn() -> Result<BR, ::rand::Error>>> = HashMap::new();
+    ctors.insert("ci", Box::new(|| CiRng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("gj", Box::new(|| GjRng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("jsf32", Box::new(|| Jsf32Rng::new().map(|rng| Box::new(rng) as BR)));
     ctors.insert("jsf64", Box::new(|| Jsf64Rng::new().map(|rng| Box::new(rng) as BR)));
