@@ -10,6 +10,7 @@
 //! A Small Fast Counting RNG, version 4.
 
 use rand_core::{Rng, SeedableRng, Error, impls, le};
+use core::slice;
 
 /// A Small Fast Counting RNG designed by Chris Doty-Humphrey (32-bit version).
 ///
@@ -39,10 +40,25 @@ impl SeedableRng for Sfc32Rng {
                                b: seed_u32[1],
                                c: seed_u32[2],
                                counter: 1};
+        // Skip the first 15 outputs, just in case we have a bad seed.
         for _ in 0..15 {
             state.next_u32();
         }
         state
+    }
+
+    fn from_rng<R: Rng>(mut rng: R) -> Result<Self, Error> {
+        // Custom `from_rng` function. Because we can assume the seed to be of
+        // good quality, it is not neccesary to discard the first couple of
+        // rounds.
+        let mut seed_u32 = [0u32; 3];
+        unsafe {
+            let ptr = seed_u32.as_mut_ptr() as *mut u8;
+
+            let slice = slice::from_raw_parts_mut(ptr, 4*3);
+            rng.try_fill(slice)?;
+        }
+        Ok(Self { a: seed_u32[0], b: seed_u32[1], c: seed_u32[2], counter: 1 })
     }
 }
 
@@ -113,10 +129,25 @@ impl SeedableRng for Sfc64Rng {
                                b: seed_u64[1],
                                c: seed_u64[2],
                                counter: 1};
-        for _ in 0..20 {
+        // Skip the first 18 outputs, just in case we have a bad seed.
+        for _ in 0..18 {
             state.next_u64();
         }
         state
+    }
+
+    fn from_rng<R: Rng>(mut rng: R) -> Result<Self, Error> {
+        // Custom `from_rng` function. Because we can assume the seed to be of
+        // good quality, it is not neccesary to discard the first couple of
+        // rounds.
+        let mut seed_u64 = [0u64; 3];
+        unsafe {
+            let ptr = seed_u64.as_mut_ptr() as *mut u8;
+
+            let slice = slice::from_raw_parts_mut(ptr, 8*3);
+            rng.try_fill(slice)?;
+        }
+        Ok(Self { a: seed_u64[0], b: seed_u64[1], c: seed_u64[2], counter: 1 })
     }
 }
 
