@@ -25,7 +25,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "rand"
 version = "0.4.1"
-source = "git+https://github.com/dhardy/rand#e9359ac5f19a0678568f7e8096cad72e69cb1fa4"
+source = "git+https://github.com/dhardy/rand#8990da2662cb1b3021206ce3355d3904cbc33e61"
 dependencies = [
  "fuchsia-zircon 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.2.34 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -36,7 +36,7 @@ dependencies = [
 [[package]]
 name = "rand_core"
 version = "0.0.1"
-source = "git+https://github.com/dhardy/rand#e9359ac5f19a0678568f7e8096cad72e69cb1fa4"
+source = "git+https://github.com/dhardy/rand#8990da2662cb1b3021206ce3355d3904cbc33e61"
 
 [[package]]
 name = "small_rngs"
